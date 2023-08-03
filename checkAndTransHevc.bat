@@ -6,14 +6,12 @@ set done_folder="%input_folder%\done"
 
 set nvenc_preset=slow
 set nvenc_qp=23
-set nvenc_maxrate=10M
-set nvenc_bufsize=20M
 
 for %%f in ("%input_folder%\*.*") do (
     ffmpeg -i "%%f" 2>&1 | findstr /C:"hevc" >nul
     if errorlevel 1 (
         echo Transcoding "%%f" to HEVC...
-        ffmpeg -y -hwaccel cuvid -i "%%f" -c:v hevc_nvenc -preset:v %nvenc_preset% -cq:v %nvenc_qp% -maxrate:v %nvenc_maxrate% -bufsize:v %nvenc_bufsize% -c:a copy -c:s copy "%output_folder%\%%~nf.hevc.mkv"
+        ffmpeg -y -hwaccel cuvid -i "%%f" -c:v hevc_nvenc -preset:v %nvenc_preset% -cq:v %nvenc_qp% -c:a copy -c:s copy "%output_folder%\%%~nf.hevc.mkv"
         echo Finished transcoding "%%f".
         move "%%f" "%done_folder%"
     ) else (
